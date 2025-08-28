@@ -1,87 +1,42 @@
 name: generate animation
 
-
-
 on:
-
   # run automatically every 24 hours
-
   schedule:
-
-    - cron: "0 */24 * * *" 
-
-  
-
-  # allows to manually run the job at any time
-
+    - cron: "0 0 * * *"  # her gün UTC 00:00'da çalışır
+  # allows manual run
   workflow_dispatch:
-
-  
-
-  # run on every push on the master branch
-
+  # run on push to master
   push:
-
     branches:
-
-    - master
-
-    
-
-  
-
-
+      - master
 
 jobs:
-
   generate:
-
     runs-on: ubuntu-latest
-
     timeout-minutes: 10
 
-    
-
     steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # generates a snake game from a github user (<github_user_name>) contributions graph, output a svg animation at <svg_out_path>
-
-      - name: generate github-contribution-grid-snake.svg
-
+      # Generate SVG animations
+      - name: Generate GitHub Contribution Grid Snake SVGs
         uses: Platane/snk/svg-only@v3
-
         with:
-
           github_user_name: AydoganCan60
-
           outputs: |
-
             dist/github-contribution-grid-snake.svg
-
-            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
-
+            dist/github-contribution-grid-snake-dark.svg
         env:
-
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-          
-
-          
-
-      # push the content of <build_dir> to a branch
-
-      # the content will be available at https://raw.githubusercontent.com/<github_user>/<repository>/<target_branch>/<file> , or as github page
-
-      - name: push github-contribution-grid-snake.svg to the output branch
-
+      
+      # Push to output branch
+      - name: Push SVGs to output branch
         uses: crazy-max/ghaction-github-pages@v3.1.0
-
         with:
-
           target_branch: output
-
           build_dir: dist
-
         env:
-
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
